@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Blocos Clássico</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Press Start 2P', Arial, sans-serif;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #game-container {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        #game-canvas {
+            border: 2px solid #333;
+            background-color: #000;
+        }
+
+        #score-container {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #next-piece {
+            position: absolute;
+            top: 0;
+            right: -120px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #333;
+            background-color: #000;
+        }
+
+        .game-over {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #fff;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="score-container">Score: <span id="score">0</span></div>
+    <div id="game-container">
+        <canvas id="game-canvas" width="300" height="600"></canvas>
+        <canvas id="next-piece"></canvas>
+        <div id="game-over" class="game-over">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button onclick="startGame()">Play Again</button>
+        </div>
+    </div>
+    
+    <div id="mobile-controls" style="margin-top: 20px; display: none;">
+        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+            <button id="rotate-btn" style="width: 80px; height: 50px;">↻ Rotate</button>
+        </div>
+        <div style="display: flex; justify-content: center;">
+            <button id="left-btn" style="width: 80px; height: 50px; margin-right: 10px;">← Left</button>
+            <button id="down-btn" style="width: 80px; height: 50px;">↓ Down</button>
+            <button id="right-btn" style="width: 80px; height: 50px; margin-left: 10px;">Right →</button>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <button id="drop-btn" style="width: 200px; height: 50px;">Drop ⤓</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
