@@ -2,6 +2,7 @@
 const ROWS = 20;
 const COLS = 10;
 const BLOCK_SIZE = 30;
+const GAME_TIME = 240; // Tempo de jogo em segundos
 const COLORS = [
     '#000000', // Preto (fundo)
     '#FF0000', // Vermelho (I)
@@ -59,9 +60,13 @@ let nextPieceCanvas, nextPieceCtx;
 let board;
 let currentPiece, nextPiece;
 let score;
+let level = 1;
 let gameOver;
 let gameLoop;
-let dropInterval = 1000; // Tempo em ms para a peça cair um bloco
+let timerInterval;
+let remainingTime = GAME_TIME; // Tempo restante em segundos
+let baseDropInterval = 1000; // Tempo base em ms para a peça cair um bloco
+let dropInterval = baseDropInterval; // Tempo atual em ms para a peça cair um bloco
 let lastDropTime;
 
 // Inicialização do jogo
@@ -87,9 +92,18 @@ function startGame() {
     // Inicializar o tabuleiro (matriz)
     board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
     
-    // Resetar pontuação
+    // Resetar pontuação e nível
     score = 0;
+    level = 1;
     document.getElementById('score').textContent = score;
+    document.getElementById('level').textContent = level;
+    
+    // Resetar timer
+    remainingTime = GAME_TIME;
+    document.getElementById('timer').textContent = formatTime(remainingTime);
+    
+    // Resetar velocidade de queda
+    dropInterval = baseDropInterval;
     
     // Esconder tela de game over
     document.getElementById('game-over').style.display = 'none';
@@ -101,12 +115,16 @@ function startGame() {
     // Resetar estado do jogo
     gameOver = false;
     
-    // Limpar intervalo anterior se existir
+    // Limpar intervalos anteriores se existirem
     if (gameLoop) clearInterval(gameLoop);
+    if (timerInterval) clearInterval(timerInterval);
     
     // Iniciar loop do jogo
     lastDropTime = Date.now();
     gameLoop = setInterval(update, 30); // Atualizar a cada 30ms
+    
+    // Iniciar timer
+    timerInterval = setInterval(updateTimer, 1000); // Atualizar a cada segundo
     
     // Desenhar o jogo inicial
     draw();
@@ -136,6 +154,30 @@ function update() {
     }
     
     draw();
+}
+
+// Função para atualizar o timer
+function updateTimer() {
+    if (gameOver) return;
+    
+    remainingTime--;
+    document.getElementById('timer').textContent = formatTime(remainingTime);
+    
+    if (remainingTime <= 0) {
+        // Tempo acabou, fim de jogo
+        gameOver = true;
+        clearInterval(gameLoop);
+        clearInterval(timerInterval);
+        document.getElementById('game-over').style.display = 'block';
+        document.getElementById('final-score').textContent = score;
+    }
+}
+
+// Função para formatar o tempo (MM:SS)
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
 // Função para desenhar o jogo
@@ -382,9 +424,15 @@ function clearLines() {
         score += points[linesCleared] || points[points.length - 1];
         document.getElementById('score').textContent = score;
         
-        // Aumentar velocidade a cada 1000 pontos
-        const level = Math.floor(score / 1000) + 1;
-        dropInterval = Math.max(100, 1000 - (level - 1) * 100); // Mínimo de 100ms
+        // Atualizar nível a cada 1000 pontos
+        const newLevel = Math.floor(score / 1000) + 1;
+        if (newLevel > level) {
+            level = newLevel;
+            document.getElementById('level').textContent = level;
+            
+            // Aumentar velocidade com base no nível (0.25x mais rápido por nível)
+            dropInterval = baseDropInterval / (1 + (level - 1) * 0.25);
+        }
     }
 }
 

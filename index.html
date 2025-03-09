@@ -27,8 +27,11 @@
         }
 
         #score-container {
-            font-size: 24px;
+            font-size: 20px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
         }
 
         #next-piece {
@@ -69,7 +72,11 @@
     </style>
 </head>
 <body>
-    <div id="score-container">Score: <span id="score">0</span></div>
+    <div id="score-container">
+        <div>Score: <span id="score">0</span></div>
+        <div>Level: <span id="level">1</span></div>
+        <div>Time: <span id="timer">04:00</span></div>
+    </div>
     <div id="game-container">
         <canvas id="game-canvas" width="300" height="600"></canvas>
         <canvas id="next-piece"></canvas>
